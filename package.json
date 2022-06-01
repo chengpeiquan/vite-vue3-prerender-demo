@@ -1,0 +1,54 @@
+{
+  "name": "prerender-demo",
+  "version": "0.0.0",
+  "description": "",
+  "author": "",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vue-tsc --noEmit && vite build",
+    "build:vite": "vite build",
+    "build:server": "vite build --ssr src/entry-server --outDir dist/server",
+    "generate": "vite build --ssrManifest --outDir dist/static && npm run build:server && esno scripts/prerender.ts",
+    "preview": "vite preview",
+    "lint": "eslint src --ext .js,.ts",
+    "format": "prettier --write src",
+    "backup": "git add . && git commit -m \"chore: backup\" && git push",
+    "up": "npx npm-check-updates -u"
+  },
+  "dependencies": {
+    "pinia": "^2.0.13",
+    "vue": "^3.2.33",
+    "vue-router": "^4.0.14"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.31",
+    "@typescript-eslint/eslint-plugin": "^5.22.0",
+    "@typescript-eslint/parser": "^5.22.0",
+    "@vitejs/plugin-vue": "^2.3.1",
+    "eslint": "^8.14.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-vue": "^8.7.1",
+    "esno": "^0.16.3",
+    "less": "^4.1.2",
+    "lint-staged": "^12.4.1",
+    "prettier": "^2.6.2",
+    "typescript": "^4.6.4",
+    "unplugin-vue-components": "^0.19.3",
+    "vite": "^2.9.7",
+    "vite-plugin-banner": "^0.2.0",
+    "vue-tsc": "^0.34.11",
+    "yorkie": "^2.0.0"
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged --concurrent false"
+  },
+  "lint-staged": {
+    "*.{js,jsx,vue,ts,tsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
+  }
+}
