@@ -1,14 +1,14 @@
 {
   "name": "prerender-demo",
   "version": "0.0.0",
-  "description": "",
-  "author": "",
+  "description": "A prerender demo for Vue 3 base on Vite.",
+  "author": "chengpeiquan",
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "vite --host",
-    "build": "vue-tsc --noEmit && vite build",
-    "build:vite": "vite build",
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && npm run build:client && npm run generate",
+    "build:client": "vite build --ssrManifest --outDir dist/client",
     "build:server": "vite build --ssr src/entry-server --outDir dist/server",
     "generate": "vite build --ssrManifest --outDir dist/static && npm run build:server && esno scripts/prerender.ts",
     "preview": "vite preview",
@@ -23,6 +23,7 @@
     "vue-router": "^4.0.14"
   },
   "devDependencies": {
+    "@types/fs-extra": "^9.0.13",
     "@types/node": "^17.0.31",
     "@typescript-eslint/eslint-plugin": "^5.22.0",
     "@typescript-eslint/parser": "^5.22.0",
@@ -32,6 +33,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-vue": "^8.7.1",
     "esno": "^0.16.3",
+    "fs-extra": "^10.1.0",
     "less": "^4.1.2",
     "lint-staged": "^12.4.1",
     "prettier": "^2.6.2",

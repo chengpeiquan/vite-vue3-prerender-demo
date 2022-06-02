@@ -1,5 +1,11 @@
 <template>
-  <router-view :key="key" />
+  <router-view :key="key" v-slot="{ Component }">
+    <Suspense>
+      <div>
+        <component :is="Component" />
+      </div>
+    </Suspense>
+  </router-view>
 </template>
 
 <script setup lang="ts">

@@ -34,7 +34,7 @@
 
   <ul>
     <li>
-      Click <router-link to="/about">Here</router-link> to see a children
+      Click <router-link to="/foo/bar">Here</router-link> to see a children
       router.
     </li>
     <li>
