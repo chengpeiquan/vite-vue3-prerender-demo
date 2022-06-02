@@ -1,6 +1,7 @@
 import fs from 'fs-extra'
-import { resolve } from './utils'
 import fg from 'fast-glob'
+import { resolve } from './utils'
+import seo from '../src/router/seo'
 
 /**
  * 从 `src/views` 里读取路由组件来确定最终的路由页面
@@ -34,19 +35,41 @@ async function run() {
 
   // 预渲染每个路由...
   const routesToPrerender = await getRoutesToPrerender()
+
   for (const url of routesToPrerender) {
-    const [appHtml, preloadLinks] = await render(url, manifest)
+    // 根据文件所在的路径，创建存放的文件夹
+    const dirs = url.split('/')
+    const lastIndex = dirs.length - 1
+    if (dirs.length > 2) {
+      const dir = dirs.slice(1, lastIndex).join('/')
+      fs.mkdirpSync(`dist/static/${dir}`)
+    }
 
     // 根据注释标记替换成要渲染的内容
-    const html = template
+    const [appHtml, preloadLinks] = await render(url, manifest)
+    let html = template
       .replace(`<!--preload-links-->`, preloadLinks)
       .replace(`<!--app-html-->`, appHtml)
 
-    // 根据文件所在的路径，创建存放的文件夹
-    const dirs = url.split('/')
-    if (dirs.length > 2) {
-      const dir = dirs.slice(1, dirs.length - 1).join('/')
-      fs.mkdirpSync(`dist/static/${dir}`)
+    // 完善 SEO 信息
+    const tkd = seo.find((item) => item.url === url)
+    if (tkd) {
+      const { title, description, keywords } = tkd
+
+      // 添加标题
+      html = html.replace(`<!--title-->`, `<title>${title}</title>`)
+
+      // 添加描述
+      html = html.replace(
+        `<!--description-->`,
+        `<meta name="description" content="${description}">`
+      )
+
+      // 添加关键词
+      html = html.replace(
+        `<!--keywords-->`,
+        `<meta name="keywords" content="${keywords.join(',')}">`
+      )
     }
 
     // 写入处理好的 HTML 文件

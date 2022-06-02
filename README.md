@@ -8,16 +8,19 @@
 
 ## HTML 部分
 
-项目根目录下 `index.html` 里需要追加两条资源注入位置的注释：
+项目根目录下 `index.html` 里需要追加至少两条资源注入位置的注释：
 
-注释语句|作用
-:-:|:-:
-`<!--preload-links-->`|预加载资源
-`<!--app-html-->`|页面内容
+注释语句|作用|是否必须
+:-:|:-:|:-:
+`<!--preload-links-->`|预加载资源|是
+`<!--app-html-->`|页面内容|是
+`<!--title-->`|SEO 优化：写入标题|否
+`<!--description-->`|SEO 优化：写入描述|否
+`<!--keywords-->`|SEO 优化：写入关键词|否
 
 并把入口文件改成 `entry-client.ts` ，原来的 `main.ts` 会作为客户端和服务端启动时的引用。
 
-完整代码如下（源码：[index.html](https://github.com/chengpeiquan/vite-vue3-prerender-demo/blob/main/index.html)）：
+完整代码如下（源码：[index.html](https://github.com/chengpeiquan/vite-vue3-prerender-demo/blob/main/index.html) ）：
 
 ```html
 <!DOCTYPE html>
@@ -26,7 +29,9 @@
     <meta charset="UTF-8" />
     <link rel="icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
+    <!--title-->
+    <!--description-->
+    <!--keywords-->
     <!--preload-links-->
   </head>
   <body>
@@ -35,6 +40,8 @@
   </body>
 </html>
 ```
+
+其中除了两条必须的注释语句外，可选的部分见 [SEO 优化](#seo-优化) 。
 
 ## 入口文件
 
@@ -53,13 +60,33 @@
 
 详见源码： [router](https://github.com/chengpeiquan/vite-vue3-prerender-demo/blob/main/src/router/index.ts)
 
+## SEO 优化
+
+做预渲染为的就是做 SEO ，所以需要自己提前配置好 SEO 的 TKD 三大要素，这里我也是放在 `src/router` 目录下一起管理了。
+
+实现逻辑见 [预渲染](#预渲染) 部分的说明，这里是以最终每个页面的相对路径来判断要写入的 TKD 信息的。
+
+```ts
+export default [
+  {
+    url: '/',
+    title: '首页',
+    description: '这是首页',
+    keywords: ['关键词1', '关键词2'],
+  },
+  // ...
+]
+```
+
+详见源码： [seo](https://github.com/chengpeiquan/vite-vue3-prerender-demo/blob/main/src/router/seo.ts)
+
 ## 预渲染
 
 `scripts/prerender.ts` 这个文件是执行预渲染行为，可以按照路由目录的结构渲染为静态 HTML 文件。
 
 运行 `npm run generate` ，可以把 `dist/static` 作为静态站点部署。
 
-当然我也封装了 `npm run build` 一次性编译所有平台（ client / server / static ）。
+当然我也封装了 `npm run build` 一次性编译所有平台（ Client / Server / Static ）。
 
 详见： [package.json](https://github.com/chengpeiquan/vite-vue3-prerender-demo/blob/main/package.json) 里的 `scripts` 部分。
 
